@@ -1,0 +1,8 @@
+# Ignorar dependencias y compilados
+node_modules
+dist
+coverage
+.prisma
+.env
+# Ignorar archivos de migraciones (si no quieres que se reformatéen)
+prisma/migrations

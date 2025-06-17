@@ -1,0 +1,8 @@
+# Ignorar cosas que no deben ser analizadas por el linter
+node_modules
+dist
+coverage
+.env
+.prisma
+# A veces se ignora el cliente Prisma generado
+prisma/generated
