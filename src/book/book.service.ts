@@ -10,12 +10,18 @@ export class BookService {
     return this.prisma.book.create({
       data: {
         title: dto.title,
-        author: dto.author
+        author: {
+          connect: { id: dto.authorId }
+        }
       }
     });
   }
 
   getBooks() {
-    return this.prisma.book.findMany();
+    return this.prisma.book.findMany({
+      include: {
+        author: true
+      }
+    });
   }
 }
