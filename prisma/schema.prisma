@@ -20,6 +20,7 @@ model Book {
   author      String
   description String?
   reviews     Review[] // Relación 1:N con reseñas
+  readers   UserBook[] // relación con usuarios
   createdAt   DateTime @default(now())
 }
 
@@ -29,7 +30,19 @@ model User {
   password  String
   name      String
   reviews   Review[] // Relación 1:N con reseñas
+  books     UserBook[]  // relación con libros
   createdAt DateTime @default(now())
+}
+
+model UserBook {
+  user     User @relation(fields: [userId], references: [id])
+  userId   Int
+  book     Book @relation(fields: [bookId], references: [id])
+  bookId   Int
+  status   String   @default("to_read") // to_read, reading, read, favorite...
+  addedAt  DateTime @default(now())
+
+  @@id([userId, bookId]) // clave compuesta
 }
 
 
