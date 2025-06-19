@@ -7,7 +7,6 @@ export class BookService {
   constructor(private prisma: PrismaService) {}
 
   createBook(dto: CreateBookDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
     return this.prisma.book.create({
       data: {
         title: dto.title,
@@ -17,7 +16,6 @@ export class BookService {
   }
 
   getBooks() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
     return this.prisma.book.findMany();
   }
 }

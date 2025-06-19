@@ -14,8 +14,6 @@ export class AuthService {
 
   async signup(dto: AuthDto) {
     const hashed: string = await bcrypt.hash(dto.password, 10);
-    //TODO: Fix
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     try {
       const user = await this.prisma.user.create({
         data: {
@@ -35,8 +33,6 @@ export class AuthService {
   }
 
   async login(dto: AuthDto) {
-    //TODO: Fix
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email }
     });

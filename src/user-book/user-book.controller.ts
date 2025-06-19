@@ -11,15 +11,11 @@ export class UserBookController {
 
   @Post()
   add(@CurrentUser('id') userId: number, @Body() dto: AddBookToUserDto) {
-    //TODO: fix
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.addBookToUser(userId, dto);
   }
 
   @Get()
   getMyBooks(@CurrentUser('id') userId: number) {
-    //TODO: fix
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.service.getUserBooks(userId);
   }
 }
