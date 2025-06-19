@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth/auth';
 import { JwtAuthGuard } from 'src/shared/guards/jwt.guard';
+import { User } from 'generated/prisma';
 
 @Controller('auth')
 export class AuthController {
@@ -20,8 +21,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getMe(@Req() req) {
-    //TODO: fix
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-    return req.user;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const user: User = req.user as User;
+    console.log(user);
+    return user;
   }
 }

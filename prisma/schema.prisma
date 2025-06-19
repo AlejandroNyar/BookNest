@@ -14,41 +14,74 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Author {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  imageUrl String?
+  books    Book[]
+  Report   Report[]
+}
+
 model Book {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   title       String
-  author      String
+  author      Author     @relation(fields: [authorId], references: [id])
+  authorId    Int
   description String?
+  imageUrl    String?
   reviews     Review[] // Relación 1:N con reseñas
-  readers   UserBook[] // relación con usuarios
-  createdAt   DateTime @default(now())
+  readers     UserBook[] // relación con usuarios
+  createdAt   DateTime   @default(now())
+  Report      Report[]
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
   name      String
+  avatarUrl String?
   reviews   Review[] // Relación 1:N con reseñas
-  books     UserBook[]  // relación con libros
-  createdAt DateTime @default(now())
+  books     UserBook[] // relación con libros
+  createdAt DateTime   @default(now())
+  Report    Report[]
 }
 
 model UserBook {
-  user     User @relation(fields: [userId], references: [id])
-  userId   Int
-  book     Book @relation(fields: [bookId], references: [id])
-  bookId   Int
-  status   String   @default("to_read") // to_read, reading, read, favorite...
-  addedAt  DateTime @default(now())
+  user    User     @relation(fields: [userId], references: [id])
+  userId  Int
+  book    Book     @relation(fields: [bookId], references: [id])
+  bookId  Int
+  status  String   @default("to_read") // to_read, reading, read, favorite...
+  addedAt DateTime @default(now())
 
   @@id([userId, bookId]) // clave compuesta
 }
 
+model AppError {
+  id         Int      @id @default(autoincrement())
+  message    String
+  stackTrace String?
+  context    String?
+  createdAt  DateTime @default(now())
+}
+
+model Report {
+  id          Int        @id @default(autoincrement())
+  type        ReportType
+  description String
+  user        User       @relation(fields: [userId], references: [id])
+  userId      Int
+  book        Book?      @relation(fields: [bookId], references: [id])
+  bookId      Int?
+  author      Author?    @relation(fields: [authorId], references: [id])
+  authorId    Int?
+  createdAt   DateTime   @default(now())
+}
 
 model Review {
   id        Int      @id @default(autoincrement())
-  rating    Int      // Por ejemplo, 1 a 5 estrellas
+  rating    Int 
   comment   String?
   user      User     @relation(fields: [userId], references: [id])
   userId    Int
@@ -57,4 +90,10 @@ model Review {
   createdAt DateTime @default(now())
 
   @@unique([userId, bookId]) // Un usuario no puede reseñar el mismo libro 2 veces
+}
+
+enum ReportType {
+  BOOK
+  AUTHOR
+  OTHER
 }
