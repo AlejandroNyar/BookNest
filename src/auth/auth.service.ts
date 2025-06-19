@@ -1,9 +1,9 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { AuthDto } from './dto/auth/auth';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from 'generated/prisma';
+import { PrismaClientKnownRequestError } from 'generated/prisma/runtime/library';
 
 @Injectable()
 export class AuthService {
@@ -16,17 +16,28 @@ export class AuthService {
     const hashed: string = await bcrypt.hash(dto.password, 10);
     //TODO: Fix
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const user: User = await this.prisma.user.create({
-      data: { ...dto, password: hashed }
-    });
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          name: dto.name,
+          password: hashed
+        }
+      });
 
-    return this.signToken(user.id, user.email);
+      return this.signToken(user.id, user.email);
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+        throw new ConflictException('El email ya está registrado');
+      }
+      throw error;
+    }
   }
 
   async login(dto: AuthDto) {
     //TODO: Fix
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const user: User = await this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email: dto.email }
     });
 
@@ -41,7 +52,7 @@ export class AuthService {
   private async signToken(userId: number, email: string): Promise<{ access_token: string }> {
     const payload = { sub: userId, email };
     const token = await this.jwt.signAsync(payload, {
-      expiresIn: '15m',
+      expiresIn: '30m',
       secret: process.env.JWT_SECRET
     });
 
