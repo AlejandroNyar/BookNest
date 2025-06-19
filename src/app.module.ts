@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { UserBookModule } from './user-book/user-book.module';
 import { AuthorModule } from './author/author.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { AuthorModule } from './author/author.module';
     AuthModule,
     PrismaModule,
     UserBookModule,
-    AuthorModule
+    AuthorModule,
+    ReportModule
   ],
   controllers: [AppController],
   providers: [AppService]
