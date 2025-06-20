@@ -27,6 +27,7 @@ model Book {
   title       String
   author      Author?     @relation(fields: [authorId], references: [id])
   authorId    Int?
+  authorName  String?   //En caso de ser un Book de usuario
   description String?
   imageUrl    String?
   reviews     Review[] // Relación 1:N con reseñas
