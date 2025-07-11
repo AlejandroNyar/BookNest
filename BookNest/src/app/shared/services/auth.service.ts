@@ -4,14 +4,21 @@ import { BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000/auth';
+  private baseUrl = 'http://localhost:3000/api/auth';
   private userSubject = new BehaviorSubject<any>(null);
 
   user$ = this.userSubject.asObservable();
 
   constructor(private http: HttpClient) {
-    const user = localStorage.getItem('user');
-    if (user) this.userSubject.next(JSON.parse(user));
+    const userData = localStorage.getItem('user');
+    try {
+      if (userData) {
+        this.userSubject.next(JSON.parse(userData));
+      }
+    } catch (e) {
+      console.error('Error parsing user from localStorage', e);
+      this.userSubject.next(null);
+    }
   }
 
   login(data: { email: string; password: string }) {

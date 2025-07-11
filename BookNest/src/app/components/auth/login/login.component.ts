@@ -22,7 +22,7 @@ export class LoginComponent {
     if (this.form.invalid) return;
 
     this.auth.login(this.form.value).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => this.router.navigate(['/dashboard']),
       error: err => this.error = err.error?.message || 'Login failed',
     });
   }

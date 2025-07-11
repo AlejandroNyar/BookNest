@@ -6,29 +6,36 @@ import { AuthService } from '../services/auth.service';
 describe('AuthGuard', () => {
   let guard: AuthGuard;
   let mockAuthService: any;
-  let mockRouter: any;
+  let mockRouter: jasmine.SpyObj<Router>;
 
   beforeEach(() => {
-    mockAuthService = { isAuthenticated: () => true };
-    mockRouter = { navigate: jasmine.createSpy('navigate') };
+    //Manual mock, since jasmine doesn't handle getters correclty  
+    mockAuthService = {
+      _value: true,
+      get isAuthenticated() {
+        return this._value;
+      }
+    };
+    mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     TestBed.configureTestingModule({
       providers: [
         AuthGuard,
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+      ],
     });
 
     guard = TestBed.inject(AuthGuard);
   });
 
   it('debería permitir acceso si está autenticado', () => {
+    mockAuthService._value = true;
     expect(guard.canActivate()).toBeTrue();
   });
 
   it('debería redirigir si no está autenticado', () => {
-    mockAuthService.isAuthenticated = () => false;
+    mockAuthService._value = false;
     expect(guard.canActivate()).toBeFalse();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
   });

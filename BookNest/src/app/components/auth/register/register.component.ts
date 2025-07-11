@@ -23,7 +23,7 @@ export class RegisterComponent {
     if (this.form.invalid) return;
 
     this.auth.register(this.form.value).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => this.router.navigate(['/dashboard']),
       error: err => this.error = err.error?.message || 'Registration failed',
     });
   }

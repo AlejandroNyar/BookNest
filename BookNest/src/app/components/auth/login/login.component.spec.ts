@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -17,7 +17,7 @@ describe('LoginComponent', () => {
 
     await TestBed.configureTestingModule({
       declarations: [LoginComponent],
-      imports: [FormsModule],
+      imports: [FormsModule, ReactiveFormsModule],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
         { provide: Router, useValue: mockRouter }
@@ -40,7 +40,7 @@ describe('LoginComponent', () => {
     });
 
     component.onSubmit();
-    expect(mockAuthService.login).toHaveBeenCalledWith('test@example.com', '123456');
+    expect(mockAuthService.login).toHaveBeenCalledWith({email: 'test@example.com', password: '123456'});
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
   
